@@ -23,6 +23,7 @@ export interface IItem extends Document {
     wordCount?: number;
   };
   embedding?: number[];
+  itemCollection?: string;
   relatedItems: mongoose.Types.ObjectId[];
   lastSurfaced?: Date;
   surfaceCount: number;
@@ -57,6 +58,7 @@ const ItemSchema = new Schema<IItem>({
     wordCount: Number
   },
   embedding: [{ type: Number }],
+  itemCollection: { type: String, default: '' },
   relatedItems: [{ type: Schema.Types.ObjectId, ref: 'Item' }],
   lastSurfaced: Date,
   surfaceCount: { type: Number, default: 0 }
@@ -67,5 +69,6 @@ const ItemSchema = new Schema<IItem>({
 ItemSchema.index({ userId: 1, createdAt: -1 });
 ItemSchema.index({ tags: 1 });
 ItemSchema.index({ topics: 1 });
+ItemSchema.index({ itemCollection: 1 });
 
 export const Item: Model<IItem> = mongoose.models.Item || mongoose.model<IItem>('Item', ItemSchema);

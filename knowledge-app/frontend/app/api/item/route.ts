@@ -20,6 +20,9 @@ export async function GET(req: NextRequest) {
     if (tags?.length) query.tags = { $in: tags };
     if (type) query.type = type;
 
+    const itemCollection = searchParams.get('itemCollection');
+    if (itemCollection) query.itemCollection = itemCollection;
+
     const items = await Item.find(query)
       .sort({ createdAt: -1 })
       .limit(limit)

@@ -1,65 +1,273 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <style>
-    body {
-      width: 350px;
-      padding: 16px;
-      font-family: system-ui;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
+
+    body {
+      width: 360px;
+      background: #050505;
+      color: #39ff14;
+      font-family: 'Courier New', 'Consolas', monospace;
+      padding: 0;
+      border: 1px solid #39ff1440;
+    }
+
+    /* Header */
+    .header {
+      background: #0a0a0a;
+      padding: 12px 16px;
+      border-bottom: 1px solid #39ff1430;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header .dot {
+      width: 6px;
+      height: 6px;
+      background: #39ff14;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .header h1 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .header .version {
+      font-size: 9px;
+      color: #39ff1450;
+      margin-left: auto;
+    }
+
+    /* Body */
+    .body {
+      padding: 16px;
+    }
+
+    /* URL display */
+    .url-display {
+      background: #0a0a0a;
+      border: 1px solid #39ff1420;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+
+    .url-display .label {
+      font-size: 8px;
+      color: #39ff1450;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 4px;
+    }
+
+    .url-display .url {
+      font-size: 10px;
+      color: #39ff14;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Type Selector */
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 9px;
+      color: #39ff1460;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .field select {
+      width: 100%;
+      background: #0a0a0a;
+      color: #39ff14;
+      border: 1px solid #39ff1430;
+      padding: 8px 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      appearance: none;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .field select:focus {
+      border-color: #39ff14;
+      box-shadow: 0 0 8px #39ff1420;
+    }
+
+    .field select option {
+      background: #050505;
+      color: #39ff14;
+    }
+
+    /* Buttons */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
     .btn {
       width: 100%;
-      padding: 12px;
-      background: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 8px;
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       cursor: pointer;
-      font-size: 14px;
-      margin-bottom: 8px;
+      border: 1px solid;
+      transition: all 0.2s;
     }
-    .btn:hover {
-      background: #2563eb;
+
+    .btn-primary {
+      background: #39ff14;
+      color: #050505;
+      border-color: #39ff14;
     }
-    .select {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 12px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
+
+    .btn-primary:hover {
+      box-shadow: 0 0 15px #39ff1480;
     }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #ff3131;
+      border-color: #ff313140;
+    }
+
+    .btn-secondary:hover {
+      background: #ff313110;
+      border-color: #ff3131;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Status */
     .status {
-      padding: 8px;
-      border-radius: 6px;
       margin-top: 12px;
+      padding: 8px 10px;
+      font-size: 10px;
       text-align: center;
-      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      display: none;
     }
-    .success {
-      background: #d1fae5;
-      color: #065f46;
+
+    .status.visible {
+      display: block;
     }
-    .error {
-      background: #fee2e2;
-      color: #991b1b;
+
+    .status.success {
+      border: 1px solid #39ff1440;
+      color: #39ff14;
+      background: #39ff1410;
+    }
+
+    .status.error {
+      border: 1px solid #ff313140;
+      color: #ff3131;
+      background: #ff313110;
+    }
+
+    .status.loading {
+      border: 1px solid #39ff1430;
+      color: #39ff1480;
+      animation: pulse 1s infinite;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 8px 16px;
+      border-top: 1px solid #39ff1415;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .footer .indicator {
+      width: 4px;
+      height: 4px;
+      background: #ff3131;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    .footer span {
+      font-size: 8px;
+      color: #ff313160;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
   </style>
 </head>
 <body>
-  <h2>Save to Knowledge Base</h2>
-  
-  <select id="type" class="select">
-    <option value="article">Article</option>
-    <option value="video">Video</option>
-    <option value="pdf">PDF</option>
-    <option value="tweet">Tweet</option>
-    <option value="link">Link</option>
-  </select>
+  <div class="header">
+    <div class="dot"></div>
+    <h1>Knowledge_Saver</h1>
+    <span class="version">v1.0.0</span>
+  </div>
 
-  <button id="save" class="btn">💾 Save Page</button>
-  <button id="saveSelection" class="btn">✂️ Save Selection</button>
+  <div class="body">
+    <div class="url-display">
+      <div class="label">Target_URL</div>
+      <div class="url" id="currentUrl">Loading...</div>
+    </div>
 
-  <div id="status"></div>
+    <div class="field">
+      <label>Resource_Type</label>
+      <select id="type">
+        <option value="article">ARTICLE</option>
+        <option value="video">VIDEO</option>
+        <option value="pdf">PDF</option>
+        <option value="tweet">TWEET</option>
+        <option value="image">IMAGE</option>
+        <option value="link">LINK</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button id="save" class="btn btn-primary">[ INJECT_TO_CORE ]</button>
+      <button id="saveSelection" class="btn btn-secondary">[ CAPTURE_SELECTION ]</button>
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <div class="footer">
+    <div class="indicator"></div>
+    <span>System_Ready // Awaiting_Command</span>
+  </div>
 
   <script src="popup.js"></script>
 </body>

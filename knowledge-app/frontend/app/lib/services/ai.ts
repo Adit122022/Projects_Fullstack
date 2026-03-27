@@ -1,8 +1,9 @@
 import OpenAI from "openai";
 import { Item } from "../models/Item";
+import { connectDB } from "../db";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+  apiKey: process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY,
 });
 
 export async function generateEmbedding(text: string): Promise<number[]> {
@@ -51,6 +52,48 @@ export async function findRelatedItems(
   userId: string,
   excludeId: string,
 ): Promise<string[]> {
+  try {
+    await connectDB();
+
+    // Try MongoDB Atlas $vectorSearch first
+    const results = await Item.aggregate([
+      {
+        $vectorSearch: {
+          index: "vector_index",
+          path: "embedding",
+          queryVector: embedding,
+          numCandidates: 50,
+          limit: 10,
+          filter: {
+            userId: userId,
+          },
+        },
+      },
+      {
+        $match: {
+          _id: { $ne: excludeId },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          score: { $meta: "vectorSearchScore" },
+        },
+      },
+      { $limit: 5 },
+    ]);
+
+    if (results.length > 0) {
+      return results
+        .filter((r: any) => r.score > 0.7)
+        .map((r: any) => r._id.toString());
+    }
+  } catch (error: any) {
+    // $vectorSearch not available — fallback to in-memory cosine similarity
+    console.warn("⚠️ Atlas Vector Search not available, using in-memory fallback:", error.message);
+  }
+
+  // Fallback: in-memory cosine similarity
   const items = await Item.find({
     userId,
     _id: { $ne: excludeId },
@@ -62,7 +105,7 @@ export async function findRelatedItems(
       id: item._id.toString(),
       similarity: cosineSimilarity(embedding, item.embedding!),
     }))
-    .filter((s) => s.similarity > 0.7); // threshold
+    .filter((s) => s.similarity > 0.7);
 
   return similarities
     .sort((a, b) => b.similarity - a.similarity)

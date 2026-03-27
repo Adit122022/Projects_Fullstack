@@ -29,6 +29,17 @@ export function ItemList({ filters }: { filters: any }) {
     }
   });
 
+  // Fetch collections for the filter — MUST be before any early returns
+  const { data: collectionsData } = useQuery({
+    queryKey: ['collections'],
+    queryFn: async () => {
+      const response = await axios.get(`${API_URL}/collections`, {
+        params: { userId: 'demo-user' }
+      });
+      return response.data;
+    }
+  });
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 space-y-4">
@@ -58,9 +69,29 @@ export function ItemList({ filters }: { filters: any }) {
         <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">
           Mount_Point: /records/all
         </span>
-        <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">
-          Showing: {data?.items.length || 0} items
-        </span>
+        <div className="flex items-center gap-3">
+          {collectionsData?.collections?.length > 0 && (
+            <select
+              value={filters.itemCollection || ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                // Pass to parent via URL params or local state
+                window.dispatchEvent(new CustomEvent('filter-collection', { detail: val }));
+              }}
+              className="bg-black border border-neon-green/30 text-neon-green px-2 py-1 text-[9px] font-bold uppercase focus:outline-none focus:border-neon-green"
+            >
+              <option value="">ALL_COLLECTIONS</option>
+              {collectionsData.collections.map((c: any) => (
+                <option key={c.name} value={c.name}>
+                  {c.name.toUpperCase()} ({c.count})
+                </option>
+              ))}
+            </select>
+          )}
+          <span className="text-[10px] font-bold uppercase tracking-widest opacity-40">
+            Showing: {data?.items.length || 0} items
+          </span>
+        </div>
       </div>
 
       {data?.items.map((item: Item) => (

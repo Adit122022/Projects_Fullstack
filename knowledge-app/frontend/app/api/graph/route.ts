@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
     const nodes = items.map(item => ({
       id: item._id.toString(),
       title: item.title,
+      url: item.url,
       type: item.type,
       tags: item.tags
     }));

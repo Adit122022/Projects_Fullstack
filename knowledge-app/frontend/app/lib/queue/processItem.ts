@@ -1,18 +1,14 @@
 import { Queue, Worker } from 'bullmq';
-import { Redis } from 'ioredis';
 import { Item } from '../models/Item';
 import { generateEmbedding, generateTags, findRelatedItems } from '../services/ai';
 import { connectDB } from '../db';
+import { getRedisConnection } from './redis';
 
-const connection = new Redis({
-  host: 'localhost',
-  port: 6379,
-  maxRetriesPerRequest: null
-});
+const connection = getRedisConnection();
 
 export const processItemQueue = new Queue('process-item', { connection });
 
-// Worker - yeh alag file mein bhi ho sakta hai
+// Worker - runs when START_WORKER=true
 if (process.env.START_WORKER === 'true') {
   const worker = new Worker('process-item', async (job) => {
     await connectDB();

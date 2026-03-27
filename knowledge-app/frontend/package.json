@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm:dev:next\" \"npm:dev:worker\" \"cd ../backend && npm run dev\"",
+    "dev": "concurrently \"npm:dev:next\" \"npm:dev:worker\"",
     "dev:next": "next dev",
     "dev:worker": "node worker.js",
     "dev:backend": "cd ../backend && npm run dev",

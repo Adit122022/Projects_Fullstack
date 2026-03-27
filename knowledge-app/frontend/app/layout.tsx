@@ -24,8 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full bg-black antialiased" suppressHydrationWarning cz-shortcut-listen="true">
-      <body className="min-h-full flex flex-col font-mono selection:bg-neon-red selection:text-white">
+    <html lang="en" className="h-full bg-black antialiased" suppressHydrationWarning >
+      <body cz-shortcut-listen="true" className="min-h-full flex flex-col font-mono selection:bg-neon-red selection:text-white">
         <Providers>{children}</Providers>
       </body>
     </html>
