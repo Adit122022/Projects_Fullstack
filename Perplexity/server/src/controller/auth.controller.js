@@ -16,13 +16,19 @@ try {
             err:"User already exisits"
         })
     }
-    await UserModel.create({username , email , password})
+   const user = await UserModel.create({username , email , password})
+  /**SEND EMAIL */
    await sendEmail({
   to: email,
   subject: `Welcome to ${Project_Name} 🎉`,
   html: mailFormate(username,email,"link" )
 });
-    res.json({message:"Signup Controller"})
+    res.json({
+        message:"User Register Successfully", success:true, 
+        user :{
+            id:user._id, username:user.username,email:user.email
+        }
+    })
 
 } catch (error) {
     
