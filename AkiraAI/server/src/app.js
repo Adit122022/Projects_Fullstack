@@ -14,6 +14,6 @@ app.get("/health", (req, res) => {
   res.json({ message: "Server is runnning on " });
 });
 /**ENDPOINTS**/
-app.use("/auth", AuthRouter);
+app.use("/api/auth", AuthRouter);
 
 export default app;
