@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer"
+import { Project_Name } from "../lib/mailFormate.js"
+
 
 const gUser =process.env.GOOGLE_USER
 const gClient_Id = process.env.GOOGLE_CLIENT_ID
@@ -26,10 +28,10 @@ transporter.verify()
 /**
  * Send E-Mail using Transporter
  */
-export async function sendEmail (to, subject, text, html){
+export async function sendEmail ({to, subject, text, html}){
   try {
     const mailOptions ={
-      from: `"Your Name" <${gUser}>`, // sender address
+      from: `${Project_Name} <${gUser}>`, // sender address
       to, // list of receivers
       subject, // Subject line
       text, // plain text body

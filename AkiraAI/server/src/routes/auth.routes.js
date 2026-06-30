@@ -1,6 +1,7 @@
 import {Router} from 'express'
-import { register_controller } from '../controller/auth.controller.js';
-import { registerValidator } from '../../validators/auth.validators.js';
+import { registerValidator } from '../validators/auth.validators.js'
+import { register_controller } from '../controller/auth.controller.js'
+
 
 const AuthRouter = Router()
 /**
