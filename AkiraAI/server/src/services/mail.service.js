@@ -21,8 +21,8 @@ const transporter = nodemailer.createTransport({
 
 // Verify the connection configuration
 transporter.verify()
-.then(()=> console.log('Email server is ready to send messages'))
-.catch((error)=> console.error('Error connecting to email server:', error))
+.then(()=> console.log('\x1b[1m📧 Email server is ready to send messages\x1b[0m'))
+.catch((error)=> console.error('\x1b[31m📧 Error connecting to email server:\x1b[0m', error))
  
 
 /**
