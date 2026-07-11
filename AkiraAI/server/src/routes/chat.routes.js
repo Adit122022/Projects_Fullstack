@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { chat_controller } from "../controller/chat.controller";
-import { authUser } from "../middlewares/auth.middleware";
+import { send_message } from "../controller/chat.controller.js";
+import { authUser } from "../middlewares/auth.middleware.js";
 
 const ChatRouter = Router();
 
