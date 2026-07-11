@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 
 import AuthRouter from "./routes/auth.routes.js";
+import ChatRouter from "./routes/chat.routes.js";
 
 const app = express();
 const frontend_URL = process.env.FRONTEND_URL || "http://localhost:5173";
@@ -33,5 +34,6 @@ app.get("/health", (req, res) => {
 
 // ─── ROUTES ────────────────────────────────────────────────────────
 app.use("/api/auth", AuthRouter);
+app.use("/api/chat", ChatRouter);
 
 export default app;
