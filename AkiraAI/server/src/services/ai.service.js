@@ -1,45 +1,68 @@
-import { ChatGoogle } from "@langchain/google";
 import { ChatMistralAI } from "@langchain/mistralai";
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { ChatGoogle } from "@langchain/google";
 
 const Google_API_KEY = process.env.GOOGLE_API_KEY;
+const Mistral_API_KEY = process.env.MISTRAL_API_KEY;
+
 const gemini_llm = new ChatGoogle({
   apiKey: Google_API_KEY,
-  model: "gemini-2.5-flash",
+  modelName: "gemini-2.5-flash",
 });
 
 const mistral_llm = new ChatMistralAI({
-  apiKey: process.env.MISTRAL_API_KEY,
+  apiKey: Mistral_API_KEY,
   model: "mistral-small-2603",
 });
 
+
 export async function aiMsg(prompt) {
   try {
-    const response = await mistral_llm
-    .invoke([
+    const formattedMessages = prompt.map((msg) => {
+      if (msg.role === "user") {
+        return new HumanMessage(msg.content);
+      } else if (msg.role === "ai" || msg.role === "assistant") {
+        return new AIMessage(msg.content);
+      } else if (msg.role === "system") {
+        return new SystemMessage(msg.content);
+      }
+      return new HumanMessage(msg.content);
+    });
+
+    // Safeguard: Ensure the last message sent to Mistral is from the user
+    const lastMsg = formattedMessages[formattedMessages.length - 1];
+    if (lastMsg && lastMsg._getType() === "ai") {
+      formattedMessages.pop(); // Remove trailing AI message if present
+    }
+
+    const response = await mistral_llm.invoke([
       new SystemMessage(
-        "You are an advanced AI chatbot designed to be the best of the best at helping users with questions and tasks. You must always prioritize safety and never generate, promote, or discuss sexual, explicit, or abusive content. Politely refuse any requests that are inappropriate or violate these guardrails. Remain professional, respectful, and helpful at all times.",
-   
+        "You are a helpful assistant that can answer questions based on the messages. The answer should be in the same language as the messages."
       ),
-      new HumanMessage(prompt),
-    ])
-    return response.text;
+      ...formattedMessages,
+    ]);
+
+    return response.content;
   } catch (error) {
-    return error;
+    console.error("Error in aiMsg:", error);
+    throw error;
   }
 }
 
-export async function genreateChatTitle(messages){
+export async function genreateChatTitle(messages) {
   try {
-    const response = await mistral_llm
-    .invoke([
+    const payload = typeof messages === "string" ? messages : JSON.stringify(messages);
+
+    const response = await gemini_llm.invoke([
       new SystemMessage(
-        "You are a helpful assistant that can generate a title for a chat based on the messages. User will give you a list of messages and you need to generate a title for the chat based on the messages. The title should be a single word or phrase that captures the essence of the chat. The title should be in the same language as the messages. The title should be no more than 10 words. The title should be no less than 3 words. The title should be no more than 30 characters. The title should be no less than 3 characters.",
+        "You are a helpful assistant that generates a concise title for a chat based on the initial message. The title should be 3 to 6 words in the same language."
       ),
-      new HumanMessage(messages),
-    ])
+      new HumanMessage(payload),
+    ]);
+
     return response.text;
   } catch (error) {
-    return error;
+    console.error("Error in genreateChatTitle:", error);
+    throw error;
   }
 }

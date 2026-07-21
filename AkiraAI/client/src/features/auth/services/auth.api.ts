@@ -10,7 +10,7 @@ import type {
 // ─── Axios Instance ────────────────────────────────────────────────────────────
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api/auth',
+  baseURL: 'http://localhost:5000/api/',
   withCredentials: true, // send/receive HttpOnly cookies automatically
   headers: {
     'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ api.interceptors.response.use(
  * On success the server sets an HttpOnly `token` cookie.
  */
 export const login = async (data: LoginInputs): Promise<AuthResponse> => {
-  const res = await api.post<AuthResponse>('/login', data)
+  const res = await api.post<AuthResponse>('/auth/login', data)
   return res.data
 }
 
@@ -51,7 +51,7 @@ export const login = async (data: LoginInputs): Promise<AuthResponse> => {
  * Registers a new user and sends a verification email.
  */
 export const register = async (data: RegisterInputs): Promise<AuthResponse> => {
-  const res = await api.post<AuthResponse>('/register', data)
+  const res = await api.post<AuthResponse>('/auth/register', data)
   return res.data
 }
 
@@ -60,7 +60,7 @@ export const register = async (data: RegisterInputs): Promise<AuthResponse> => {
  * Clears the auth cookie on the server side. Requires a valid session.
  */
 export const logout = async (): Promise<AuthResponse> => {
-  const res = await api.post<AuthResponse>('/logout')
+  const res = await api.post<AuthResponse>('/auth/logout')
   return res.data
 }
 
@@ -69,7 +69,7 @@ export const logout = async (): Promise<AuthResponse> => {
  * Returns the currently authenticated user. Requires a valid session cookie.
  */
 export const getMe = async (): Promise<AuthResponse> => {
-  const res = await api.get<AuthResponse>('/me')
+  const res = await api.get<AuthResponse>('/auth/me')
   return res.data
 }
 
