@@ -1,0 +1,112 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 3rem;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logoPixel {
+  font-family: var(--font-pixel);
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  color: var(--color-text);
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.navLink {
+  position: relative;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+  padding: 0.25rem 0;
+}
+
+.navLink:hover,
+.navLink.active {
+  color: var(--color-text);
+}
+
+.indicator {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-text);
+}
+
+.authGroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cta {
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  padding: 0.6rem 1.4rem;
+  border: 1px solid var(--color-text);
+  color: var(--color-bg);
+  background: var(--color-text);
+  transition: all var(--transition-base);
+  letter-spacing: 0.03em;
+}
+
+.cta:hover {
+  background: transparent;
+  color: var(--color-text);
+}
+
+.secondaryBtn {
+  font-family: var(--font-pixel);
+  font-size: 0.85rem;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  background: transparent;
+  transition: all var(--transition-fast);
+}
+
+.secondaryBtn:hover {
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem 1.5rem;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .logoPixel {
+    font-size: 1.2rem;
+  }
+
+  .cta {
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+  }
+}

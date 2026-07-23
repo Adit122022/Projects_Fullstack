@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   User as UserIcon, Mail, Lock, Eye, EyeOff,
@@ -22,20 +22,18 @@ interface AuthPageProps {
 
 // ─── Framer Motion Variants ────────────────────────────────────────────────────
 
-/** The dark visual side-panel slides in/out from left/right */
 const panelVariants = {
   loginPos: { x: '0%' },
   registerPos: { x: '100%' },
 }
 
-/** Form sheets slide + fade in from opposite direction */
 const formVariants = {
   hiddenLeft:  { opacity: 0, x: -40, scale: 0.97 },
   hiddenRight: { opacity: 0, x:  40, scale: 0.97 },
   visible:     { opacity: 1, x:   0, scale: 1 },
 }
 
-const spring = { type: 'spring', stiffness: 320, damping: 32 }
+const spring = { type: 'spring' as const, stiffness: 320, damping: 32 }
 const easeOut = { duration: 0.45, ease: [0.25, 1, 0.5, 1] as const }
 
 // ─── Google Icon ───────────────────────────────────────────────────────────────
@@ -52,12 +50,12 @@ const GoogleIcon = () => (
 const OrDivider = ({ label }: { label: string }) => (
   <div className="relative my-4">
     <div className="absolute inset-0 flex items-center">
-      <span className="w-full border-t border-[#CBCBCB]/60" />
+      <span className="w-full border-t border-[#222222]" />
     </div>
     <div className="relative flex justify-center">
       <span
-        className="bg-[#FFFFE3] px-2.5 text-[10px] font-bold uppercase tracking-widest"
-        style={{ color: '#6D8196', fontFamily: "'Geist', sans-serif" }}
+        className="bg-[#000000] px-2.5 text-[10px] font-bold uppercase tracking-widest text-[#888888]"
+        style={{ fontFamily: "var(--font-pixel)" }}
       >
         {label}
       </span>
@@ -67,6 +65,7 @@ const OrDivider = ({ label }: { label: string }) => (
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 const AuthPage = ({ mode }: AuthPageProps) => {
+  const navigate                        = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading]           = useState(false)
   const [errorMsg, setErrorMsg]         = useState<string | null>(null)
@@ -107,8 +106,11 @@ const AuthPage = ({ mode }: AuthPageProps) => {
     setLoading(true); setErrorMsg(null)
     try {
       const res = await login(data)
-      setSuccessMsg(`Welcome back, ${res.user?.username || 'User'}! 🎉`)
+      setSuccessMsg(`Welcome back, ${res.user?.username || 'User'}! Redirecting...`)
       resetLoginForm()
+      setTimeout(() => {
+        navigate('/')
+      }, 700)
     } catch (err: unknown) {
       setErrorMsg((err as { message?: string })?.message ?? 'Failed to authenticate.')
     } finally { setLoading(false) }
@@ -118,8 +120,11 @@ const AuthPage = ({ mode }: AuthPageProps) => {
     setLoading(true); setErrorMsg(null)
     try {
       const res = await registerUser(data)
-      setSuccessMsg(res.message ?? 'Check your email to verify your account.')
+      setSuccessMsg(res.message ?? 'Account created! Redirecting to sign in...')
       resetSignUpForm()
+      setTimeout(() => {
+        navigate('/login')
+      }, 1200)
     } catch (err: unknown) {
       const e = err as { message?: string; errors?: { path: string; msg: string }[] }
       e?.errors?.forEach(({ path, msg }) => {
@@ -132,38 +137,35 @@ const AuthPage = ({ mode }: AuthPageProps) => {
   }
 
   const isLogin = mode === 'login'
-
-  // Determine slide direction based on mode change
-  const comingFromLeft = isLogin  // login enters from left, register from right
+  const comingFromLeft = isLogin
 
   return (
     <div
-      className="relative w-screen h-screen overflow-hidden flex"
-      style={{ background: '#FFFFE3', fontFamily: "'Geist', ui-sans-serif, sans-serif" }}
+      className="relative w-screen h-screen overflow-hidden flex bg-[#000000] text-white"
+      style={{ fontFamily: "'Pixelify Sans', sans-serif" }}
     >
-      {/* ── Soft ambient glows ─────────────────────────────────────── */}
+      {/* Ambient background glows */}
       <div className="absolute top-[-20%] left-[-20%] w-[55%] h-[55%] rounded-full pointer-events-none"
-        style={{ background: '#6D8196', opacity: 0.07, filter: 'blur(130px)' }} />
+        style={{ background: '#ffffff', opacity: 0.03, filter: 'blur(130px)' }} />
       <div className="absolute bottom-[-20%] right-[-20%] w-[55%] h-[55%] rounded-full pointer-events-none"
-        style={{ background: '#4A4A4A', opacity: 0.05, filter: 'blur(130px)' }} />
+        style={{ background: '#444444', opacity: 0.03, filter: 'blur(130px)' }} />
 
       {/* ══════════════════════════════════════════════════════════════
           1.  DARK VISUAL PANEL  — slides left ↔ right via spring
           ══════════════════════════════════════════════════════════════ */}
       <motion.div
-        className="absolute top-0 bottom-0 w-1/2 hidden md:flex flex-col justify-between overflow-hidden z-20 pointer-events-none"
-        style={{ background: 'linear-gradient(135deg, #4A4A4A 0%, #2D2D2D 100%)' }}
+        className="absolute top-0 bottom-0 w-1/2 hidden md:flex flex-col justify-between overflow-hidden z-20 pointer-events-none border-r border-[#222222] bg-[#0a0a0a]"
         variants={panelVariants}
         animate={isLogin ? 'loginPos' : 'registerPos'}
         transition={spring}
       >
         {/* Logo */}
         <div className="p-10 pb-0 flex items-center gap-2.5 relative z-10">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#6D8196] to-white flex items-center justify-center font-black text-lg text-[#4A4A4A]"
-            style={{ fontFamily: "'GeistPixel', monospace" }}>
-            A
-          </div>
-          <span className="font-bold text-xl tracking-tight" style={{ color: '#FFFFE3' }}>AkiraAI</span>
+          <Link to="/" className="flex items-center gap-2 pointer-events-auto">
+            <span className="font-bold text-2xl tracking-tight text-white" style={{ fontFamily: "var(--font-pixel)" }}>
+              AkiraAi
+            </span>
+          </Link>
         </div>
 
         {/* Animated inner content */}
@@ -178,17 +180,17 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                 exit={{ opacity: 0, x: 30 }}
                 transition={easeOut}
               >
-                <div className="w-60 h-60 lg:w-68 lg:h-68 rounded-2xl overflow-hidden shadow-2xl mb-7 border border-white/10">
-                  <img src={loginVisual} alt="Login Visual" className="w-full h-full object-cover" />
+                <div className="w-60 h-60 lg:w-68 lg:h-68 rounded-xl overflow-hidden shadow-2xl mb-7 border border-[#222222] bg-[#111111]">
+                  <img src={loginVisual} alt="Login Visual" className="w-full h-full object-cover grayscale opacity-90 hover:grayscale-0 transition-all duration-500" />
                 </div>
                 <h2
-                  className="text-2xl lg:text-3xl font-extrabold tracking-tight mb-2"
-                  style={{ color: '#FFFFE3', fontFamily: "'GeistPixel', monospace" }}
+                  className="text-2xl lg:text-3xl font-extrabold tracking-tight mb-2 text-white"
+                  style={{ fontFamily: "var(--font-pixel)" }}
                 >
-                  Manage your AI Agents
+                  Manage your AI Workflows
                 </h2>
-                <p className="text-sm leading-relaxed max-w-xs px-2" style={{ color: '#CBCBCB' }}>
-                  Connect and coordinate multi-agent workflows inside AkiraAI.
+                <p className="text-sm leading-relaxed max-w-xs px-2 text-[#888888]">
+                  Connect and coordinate intelligent agent sessions inside AkiraAi.
                 </p>
               </motion.div>
             ) : (
@@ -200,17 +202,17 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                 exit={{ opacity: 0, x: -30 }}
                 transition={easeOut}
               >
-                <div className="w-60 h-60 lg:w-68 lg:h-68 rounded-2xl overflow-hidden shadow-2xl mb-7 border border-white/10">
-                  <img src={registerVisual} alt="Register Visual" className="w-full h-full object-cover" />
+                <div className="w-60 h-60 lg:w-68 lg:h-68 rounded-xl overflow-hidden shadow-2xl mb-7 border border-[#222222] bg-[#111111]">
+                  <img src={registerVisual} alt="Register Visual" className="w-full h-full object-cover grayscale opacity-90 hover:grayscale-0 transition-all duration-500" />
                 </div>
                 <h2
-                  className="text-2xl lg:text-3xl font-extrabold tracking-tight mb-2"
-                  style={{ color: '#FFFFE3', fontFamily: "'GeistPixel', monospace" }}
+                  className="text-2xl lg:text-3xl font-extrabold tracking-tight mb-2 text-white"
+                  style={{ fontFamily: "var(--font-pixel)" }}
                 >
-                  Unlock Agent Workforces
+                  Unlock Next-Gen Intelligence
                 </h2>
-                <p className="text-sm leading-relaxed max-w-xs px-2" style={{ color: '#CBCBCB' }}>
-                  Deploy custom AI subagents to automate your daily operations.
+                <p className="text-sm leading-relaxed max-w-xs px-2 text-[#888888]">
+                  Deploy custom AI assistants with sub-second pixel response precision.
                 </p>
               </motion.div>
             )}
@@ -218,8 +220,8 @@ const AuthPage = ({ mode }: AuthPageProps) => {
         </div>
 
         {/* Footer */}
-        <div className="p-10 pt-0 text-xs relative z-10" style={{ color: 'rgba(203,203,203,0.6)' }}>
-          © 2026 AkiraAI Inc. All rights reserved.
+        <div className="p-10 pt-0 text-xs relative z-10 text-[#555555]">
+          © {new Date().getFullYear()} AkiraAi. All rights reserved. Built in monochrome.
         </div>
       </motion.div>
 
@@ -227,8 +229,7 @@ const AuthPage = ({ mode }: AuthPageProps) => {
           2.  FORM PANEL  — slides in opposite direction
           ══════════════════════════════════════════════════════════════ */}
       <motion.div
-        className="absolute top-0 bottom-0 w-full md:w-1/2 flex flex-col justify-center overflow-hidden z-10"
-        style={{ background: '#FFFFE3' }}
+        className="absolute top-0 bottom-0 w-full md:w-1/2 flex flex-col justify-center overflow-hidden z-10 bg-[#000000]"
         variants={{
           loginPos:    { x: '100%' },
           registerPos: { x: '0%' },
@@ -238,21 +239,22 @@ const AuthPage = ({ mode }: AuthPageProps) => {
       >
         {/* Top bar: logo (mobile) + toggle button */}
         <div className="absolute top-7 left-7 right-7 flex items-center justify-between z-30">
-          <span
-            className="md:hidden font-extrabold text-xl tracking-tight"
-            style={{ color: '#4A4A4A', fontFamily: "'GeistPixel', monospace" }}
+          <Link
+            to="/"
+            className="md:hidden font-extrabold text-xl tracking-tight text-white"
+            style={{ fontFamily: "var(--font-pixel)" }}
           >
-            AkiraAI
-          </span>
+            AkiraAi
+          </Link>
           <div className="flex items-center gap-2 ml-auto">
-            <span className="text-xs font-medium hidden sm:inline" style={{ color: 'rgba(74,74,74,0.65)' }}>
-              {isLogin ? 'New user?' : 'Already registered?'}
+            <span className="text-xs font-medium text-[#888888] hidden sm:inline">
+              {isLogin ? 'New to AkiraAi?' : 'Already registered?'}
             </span>
             <Link to={isLogin ? '/register' : '/login'}>
               <Button
                 variant="outline"
-                className="border-[#6D8196]/80 hover:bg-[#6D8196]/10 h-8 px-3 text-xs font-semibold rounded-full flex items-center gap-1 active:scale-95 cursor-pointer"
-                style={{ color: '#4A4A4A' }}
+                className="border-[#444444] hover:border-white text-white hover:bg-white hover:text-black h-8 px-3 text-xs font-semibold rounded-none flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+                style={{ fontFamily: "var(--font-pixel)" }}
               >
                 {isLogin ? 'Create Account' : 'Sign In'}
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -261,7 +263,7 @@ const AuthPage = ({ mode }: AuthPageProps) => {
           </div>
         </div>
 
-        {/* ── Forms wrapper — AnimatePresence handles cross-fade + slide ── */}
+        {/* ── Forms wrapper ── */}
         <div className="relative w-full h-[85%] px-6 sm:px-12 md:px-16 lg:px-20 flex items-center justify-center">
           <AnimatePresence mode="wait">
             {isLogin ? (
@@ -277,31 +279,33 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                 {/* Heading */}
                 <div className="mb-6">
                   <h3
-                    className="text-3xl font-extrabold tracking-tight"
-                    style={{ color: '#4A4A4A', fontFamily: "'GeistPixel', monospace" }}
+                    className="text-3xl font-extrabold tracking-tight text-white"
+                    style={{ fontFamily: "var(--font-pixel)" }}
                   >
                     Sign In
                   </h3>
-                  <p className="text-xs mt-1 font-medium" style={{ color: '#6D8196' }}>
-                    Enter your credentials to continue
+                  <p className="text-xs mt-1 font-medium text-[#888888]">
+                    Enter your credentials to access your session
                   </p>
                 </div>
 
                 {successMsg ? (
-                  <div className="space-y-4 py-6 text-center">
-                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-1"
-                      style={{ background: 'rgba(109,129,150,0.1)', color: '#6D8196' }}>
+                  <div className="space-y-4 py-6 text-center border border-[#222222] bg-[#0a0a0a] p-6">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-1 bg-[#111111] text-white border border-[#444444]">
                       <CheckCircle2 className="w-7 h-7" />
                     </div>
-                    <h4 className="font-bold text-lg" style={{ color: '#4A4A4A', fontFamily: "'GeistPixel', monospace" }}>
-                      Success!
+                    <h4 className="font-bold text-lg text-white" style={{ fontFamily: "var(--font-pixel)" }}>
+                      Access Granted!
                     </h4>
-                    <p className="text-sm" style={{ color: '#4A4A4A' }}>{successMsg}</p>
+                    <p className="text-sm text-[#888888]">{successMsg}</p>
+                    <Link to="/chat" className="inline-block mt-2 text-xs text-white underline" style={{ fontFamily: "var(--font-pixel)" }}>
+                      Go to Chat →
+                    </Link>
                   </div>
                 ) : (
                   <form onSubmit={handleLoginSubmit(onLoginSubmit)} className="space-y-4">
                     {errorMsg && (
-                      <div className="flex items-start gap-2.5 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700">
+                      <div className="flex items-start gap-2.5 border border-red-800/50 bg-red-950/30 p-3 text-xs text-red-400">
                         <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                         <p>{errorMsg}</p>
                       </div>
@@ -310,8 +314,8 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                     <div className="space-y-1.5">
                       <Label
                         htmlFor="login-identifier"
-                        className="text-[11px] font-bold uppercase tracking-widest"
-                        style={{ color: '#4A4A4A', fontFamily: "'Geist', sans-serif" }}
+                        className="text-[11px] font-bold uppercase tracking-widest text-[#888888]"
+                        style={{ fontFamily: "var(--font-pixel)" }}
                       >
                         Email or Username
                       </Label>
@@ -319,10 +323,9 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                         id="login-identifier"
                         type="text"
                         placeholder="you@example.com"
-                        icon={<Mail className="w-4 h-4" style={{ color: '#6D8196' }} />}
+                        icon={<Mail className="w-4 h-4 text-[#888888]" />}
                         error={loginErrors.identifier?.message}
-                        className="border-[#CBCBCB] hover:border-[#6D8196]/70 focus-visible:ring-[#6D8196] bg-white h-10 rounded-xl"
-                        style={{ color: '#2D2D2D', fontFamily: "'Geist', sans-serif" }}
+                        className="border-[#222222] focus:border-white bg-[#0a0a0a] text-white h-10 rounded-none placeholder:text-[#555555]"
                         {...registerLogin('identifier')}
                       />
                     </div>
@@ -331,12 +334,12 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                       <div className="flex justify-between items-center">
                         <Label
                           htmlFor="login-password"
-                          className="text-[11px] font-bold uppercase tracking-widest"
-                          style={{ color: '#4A4A4A', fontFamily: "'Geist', sans-serif" }}
+                          className="text-[11px] font-bold uppercase tracking-widest text-[#888888]"
+                          style={{ fontFamily: "var(--font-pixel)" }}
                         >
                           Password
                         </Label>
-                        <a href="#" className="text-[11px] font-semibold hover:underline" style={{ color: '#6D8196' }}>
+                        <a href="#" className="text-[11px] font-semibold text-[#888888] hover:text-white transition-colors">
                           Forgot password?
                         </a>
                       </div>
@@ -345,17 +348,15 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                           id="login-password"
                           type={showPassword ? 'text' : 'password'}
                           placeholder="••••••••"
-                          icon={<Lock className="w-4 h-4" style={{ color: '#6D8196' }} />}
+                          icon={<Lock className="w-4 h-4 text-[#888888]" />}
                           error={loginErrors.password?.message}
-                          className="border-[#CBCBCB] hover:border-[#6D8196]/70 focus-visible:ring-[#6D8196] bg-white pr-10 h-10 rounded-xl"
-                          style={{ color: '#2D2D2D', fontFamily: "'Geist', sans-serif" }}
+                          className="border-[#222222] focus:border-white bg-[#0a0a0a] text-white pr-10 h-10 rounded-none placeholder:text-[#555555]"
                           {...registerLogin('password')}
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(p => !p)}
-                          className="absolute right-3 top-[10px] transition-colors focus:outline-none cursor-pointer"
-                          style={{ color: '#6D8196' }}
+                          className="absolute right-3 top-[10px] text-[#888888] hover:text-white transition-colors focus:outline-none cursor-pointer"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -365,12 +366,8 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                     <Button
                       type="submit"
                       loading={loading}
-                      className="w-full shadow-md active:scale-[0.98] rounded-full h-10 mt-1 text-xs font-bold uppercase tracking-widest cursor-pointer transition-all"
-                      style={{
-                        background: '#6D8196',
-                        color: '#FFFFE3',
-                        fontFamily: "'Geist', sans-serif"
-                      }}
+                      className="w-full rounded-none h-10 mt-1 text-xs font-bold uppercase tracking-widest cursor-pointer transition-all bg-white text-black hover:bg-white/80"
+                      style={{ fontFamily: "var(--font-pixel)" }}
                     >
                       Sign In
                     </Button>
@@ -383,8 +380,7 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                     <Button
                       type="button"
                       variant="outline"
-                      className="w-full border-[#CBCBCB] hover:bg-[#CBCBCB]/15 rounded-full h-10 flex items-center justify-center font-semibold text-xs cursor-pointer active:scale-[0.98] transition-all"
-                      style={{ color: '#4A4A4A', fontFamily: "'Geist', sans-serif" }}
+                      className="w-full border-[#222222] hover:border-[#444444] bg-[#0a0a0a] text-white hover:bg-[#111111] rounded-none h-10 flex items-center justify-center font-semibold text-xs cursor-pointer active:scale-[0.98] transition-all"
                     >
                       <GoogleIcon />
                       Google Workspace
@@ -405,31 +401,33 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                 {/* Heading */}
                 <div className="mb-4">
                   <h3
-                    className="text-3xl font-extrabold tracking-tight"
-                    style={{ color: '#4A4A4A', fontFamily: "'GeistPixel', monospace" }}
+                    className="text-3xl font-extrabold tracking-tight text-white"
+                    style={{ fontFamily: "var(--font-pixel)" }}
                   >
                     Create Account
                   </h3>
-                  <p className="text-xs mt-1 font-medium" style={{ color: '#6D8196' }}>
+                  <p className="text-xs mt-1 font-medium text-[#888888]">
                     Register your developer account to begin
                   </p>
                 </div>
 
                 {successMsg ? (
-                  <div className="space-y-4 py-6 text-center">
-                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-1"
-                      style={{ background: 'rgba(109,129,150,0.1)', color: '#6D8196' }}>
+                  <div className="space-y-4 py-6 text-center border border-[#222222] bg-[#0a0a0a] p-6">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-1 bg-[#111111] text-white border border-[#444444]">
                       <CheckCircle2 className="w-7 h-7" />
                     </div>
-                    <h4 className="font-bold text-lg" style={{ color: '#4A4A4A', fontFamily: "'GeistPixel', monospace" }}>
+                    <h4 className="font-bold text-lg text-white" style={{ fontFamily: "var(--font-pixel)" }}>
                       Account Created!
                     </h4>
-                    <p className="text-sm leading-relaxed" style={{ color: '#4A4A4A' }}>{successMsg}</p>
+                    <p className="text-sm leading-relaxed text-[#888888]">{successMsg}</p>
+                    <Link to="/login" className="inline-block mt-2 text-xs text-white underline" style={{ fontFamily: "var(--font-pixel)" }}>
+                      Proceed to Sign In →
+                    </Link>
                   </div>
                 ) : (
                   <form onSubmit={handleSignUpSubmit(onSignUpSubmit)} className="space-y-3">
                     {errorMsg && (
-                      <div className="flex items-start gap-2.5 rounded-lg border border-red-200 bg-red-50 p-2.5 text-xs text-red-700">
+                      <div className="flex items-start gap-2.5 border border-red-800/50 bg-red-950/30 p-2.5 text-xs text-red-400">
                         <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                         <p>{errorMsg}</p>
                       </div>
@@ -438,8 +436,8 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                     <div className="space-y-1">
                       <Label
                         htmlFor="register-username"
-                        className="text-[11px] font-bold uppercase tracking-widest"
-                        style={{ color: '#4A4A4A', fontFamily: "'Geist', sans-serif" }}
+                        className="text-[11px] font-bold uppercase tracking-widest text-[#888888]"
+                        style={{ fontFamily: "var(--font-pixel)" }}
                       >
                         Username
                       </Label>
@@ -447,10 +445,9 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                         id="register-username"
                         type="text"
                         placeholder="johndoe"
-                        icon={<UserIcon className="w-4 h-4" style={{ color: '#6D8196' }} />}
+                        icon={<UserIcon className="w-4 h-4 text-[#888888]" />}
                         error={signUpErrors.username?.message}
-                        className="border-[#CBCBCB] hover:border-[#6D8196]/70 focus-visible:ring-[#6D8196] bg-white h-10 rounded-xl"
-                        style={{ color: '#2D2D2D', fontFamily: "'Geist', sans-serif" }}
+                        className="border-[#222222] focus:border-white bg-[#0a0a0a] text-white h-10 rounded-none placeholder:text-[#555555]"
                         {...registerSignUp('username')}
                       />
                     </div>
@@ -458,8 +455,8 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                     <div className="space-y-1">
                       <Label
                         htmlFor="register-email"
-                        className="text-[11px] font-bold uppercase tracking-widest"
-                        style={{ color: '#4A4A4A', fontFamily: "'Geist', sans-serif" }}
+                        className="text-[11px] font-bold uppercase tracking-widest text-[#888888]"
+                        style={{ fontFamily: "var(--font-pixel)" }}
                       >
                         Email
                       </Label>
@@ -467,10 +464,9 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                         id="register-email"
                         type="email"
                         placeholder="name@example.com"
-                        icon={<Mail className="w-4 h-4" style={{ color: '#6D8196' }} />}
+                        icon={<Mail className="w-4 h-4 text-[#888888]" />}
                         error={signUpErrors.email?.message}
-                        className="border-[#CBCBCB] hover:border-[#6D8196]/70 focus-visible:ring-[#6D8196] bg-white h-10 rounded-xl"
-                        style={{ color: '#2D2D2D', fontFamily: "'Geist', sans-serif" }}
+                        className="border-[#222222] focus:border-white bg-[#0a0a0a] text-white h-10 rounded-none placeholder:text-[#555555]"
                         {...registerSignUp('email')}
                       />
                     </div>
@@ -478,8 +474,8 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                     <div className="space-y-1">
                       <Label
                         htmlFor="register-password"
-                        className="text-[11px] font-bold uppercase tracking-widest"
-                        style={{ color: '#4A4A4A', fontFamily: "'Geist', sans-serif" }}
+                        className="text-[11px] font-bold uppercase tracking-widest text-[#888888]"
+                        style={{ fontFamily: "var(--font-pixel)" }}
                       >
                         Password
                       </Label>
@@ -488,17 +484,15 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                           id="register-password"
                           type={showPassword ? 'text' : 'password'}
                           placeholder="••••••••"
-                          icon={<Lock className="w-4 h-4" style={{ color: '#6D8196' }} />}
+                          icon={<Lock className="w-4 h-4 text-[#888888]" />}
                           error={signUpErrors.password?.message}
-                          className="border-[#CBCBCB] hover:border-[#6D8196]/70 focus-visible:ring-[#6D8196] bg-white pr-10 h-10 rounded-xl"
-                          style={{ color: '#2D2D2D', fontFamily: "'Geist', sans-serif" }}
+                          className="border-[#222222] focus:border-white bg-[#0a0a0a] text-white pr-10 h-10 rounded-none placeholder:text-[#555555]"
                           {...registerSignUp('password')}
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(p => !p)}
-                          className="absolute right-3 top-[10px] transition-colors focus:outline-none cursor-pointer"
-                          style={{ color: '#6D8196' }}
+                          className="absolute right-3 top-[10px] text-[#888888] hover:text-white transition-colors focus:outline-none cursor-pointer"
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>
@@ -508,12 +502,8 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                     <Button
                       type="submit"
                       loading={loading}
-                      className="w-full shadow-md active:scale-[0.98] rounded-full h-10 mt-1 text-xs font-bold uppercase tracking-widest cursor-pointer transition-all"
-                      style={{
-                        background: '#6D8196',
-                        color: '#FFFFE3',
-                        fontFamily: "'Geist', sans-serif"
-                      }}
+                      className="w-full rounded-none h-10 mt-1 text-xs font-bold uppercase tracking-widest cursor-pointer transition-all bg-white text-black hover:bg-white/80"
+                      style={{ fontFamily: "var(--font-pixel)" }}
                     >
                       Create Account
                     </Button>
@@ -526,8 +516,7 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                     <Button
                       type="button"
                       variant="outline"
-                      className="w-full border-[#CBCBCB] hover:bg-[#CBCBCB]/15 rounded-full h-10 flex items-center justify-center font-semibold text-xs cursor-pointer active:scale-[0.98] transition-all"
-                      style={{ color: '#4A4A4A', fontFamily: "'Geist', sans-serif" }}
+                      className="w-full border-[#222222] hover:border-[#444444] bg-[#0a0a0a] text-white hover:bg-[#111111] rounded-none h-10 flex items-center justify-center font-semibold text-xs cursor-pointer active:scale-[0.98] transition-all"
                     >
                       <GoogleIcon />
                       Google Workspace
