@@ -36,14 +36,8 @@ export const getMessages = async (chatId: string): Promise<GetMessagesResponse> 
  * POST /api/chat/message
  * Sends a message to the chatbot. Creates a new chat session if chatId is not provided.
  */
-export const sendMessage = async (
-  message: string,
-  chatId?: string
-): Promise<SendMessageResponse> => {
-  const res = await api.post<SendMessageResponse>('/chat/message', {
-    message,
-    chat: chatId,
-  })
+export const sendMessage = async (message: string,chatId?: string): Promise<SendMessageResponse> => {
+  const res = await api.post<SendMessageResponse>('/chat/message', {message,chat: chatId,})
   return res.data
 }
 

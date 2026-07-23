@@ -2,7 +2,6 @@ import { useRef, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { AsciiRenderer, Float } from '@react-three/drei'
 import * as THREE from 'three'
-import styles from './AsciiScene.module.css'
 
 function BunnyEar({ side }: { side: 1 | -1 }) {
   const earRef = useRef<THREE.Group>(null)
@@ -10,7 +9,6 @@ function BunnyEar({ side }: { side: 1 | -1 }) {
   useFrame((state) => {
     const t = state.clock.elapsedTime
     if (earRef.current) {
-      // ears sway independently, slight phase offset per side
       earRef.current.rotation.z = side * 0.15 + Math.sin(t * 1.4 + side) * 0.06
       earRef.current.rotation.x = Math.sin(t * 0.9 + side * 2) * 0.04
     }
@@ -22,7 +20,6 @@ function BunnyEar({ side }: { side: 1 | -1 }) {
         <capsuleGeometry args={[0.14, 0.75, 8, 16]} />
         <meshStandardMaterial color="#ffffff" roughness={0.6} />
       </mesh>
-      {/* inner ear shading via slightly smaller inset capsule */}
       <mesh position={[0, 0.5, 0.09]} rotation={[0, 0, side * 0.05]}>
         <capsuleGeometry args={[0.07, 0.55, 8, 16]} />
         <meshStandardMaterial color="#ffffff" roughness={0.9} emissive="#000000" />
@@ -44,32 +41,27 @@ function Bunny() {
   useFrame((state) => {
     const t = state.clock.elapsedTime
 
-    // whole-body idle sway + gentle hop
     if (groupRef.current) {
       groupRef.current.position.y = Math.abs(Math.sin(t * 1.1)) * 0.12
       groupRef.current.rotation.y = Math.sin(t * 0.35) * 0.2
     }
 
-    // breathing body
     if (bodyRef.current) {
       const breathe = 1 + Math.sin(t * 1.8) * 0.03
       bodyRef.current.scale.set(breathe, 1 / breathe + 0.02, breathe)
     }
 
-    // head tilts curiously, looks around
     if (headRef.current) {
       headRef.current.rotation.z = Math.sin(t * 0.6) * 0.05
       headRef.current.rotation.y = Math.sin(t * 0.5) * 0.15
     }
 
-    // blink cycle
     const cycle = (t * 0.6) % 4
     const blinking = cycle > 3.85
     const eyeScale = blinking ? 0.1 : 1
     if (leftEyeRef.current) leftEyeRef.current.scale.y = eyeScale
     if (rightEyeRef.current) rightEyeRef.current.scale.y = eyeScale
 
-    // chewing carrot: small up-down nibble + paws squeeze
     const chew = Math.sin(t * 4) * 0.03
     if (carrotRef.current) {
       carrotRef.current.position.y = 0.15 + chew
@@ -82,26 +74,22 @@ function Bunny() {
   return (
     <group ref={groupRef}>
       <Float speed={1.6} rotationIntensity={0.1} floatIntensity={0.3}>
-        {/* body */}
         <mesh ref={bodyRef} position={[0, -0.55, 0]}>
           <sphereGeometry args={[0.95, 32, 32]} />
           <meshStandardMaterial color="#ffffff" roughness={0.7} />
         </mesh>
 
-        {/* head */}
         <group ref={headRef} position={[0, 0.55, 0]}>
           <mesh>
             <sphereGeometry args={[0.85, 32, 32]} />
             <meshStandardMaterial color="#ffffff" roughness={0.6} />
           </mesh>
 
-          {/* muzzle bump */}
           <mesh position={[0, -0.15, 0.72]}>
             <sphereGeometry args={[0.42, 24, 24]} />
             <meshStandardMaterial color="#ffffff" roughness={0.7} />
           </mesh>
 
-          {/* eyes — big, round, glossy */}
           <mesh ref={leftEyeRef} position={[-0.3, 0.12, 0.72]}>
             <sphereGeometry args={[0.14, 20, 20]} />
             <meshStandardMaterial color="#050505" roughness={0.15} />
@@ -111,18 +99,15 @@ function Bunny() {
             <meshStandardMaterial color="#050505" roughness={0.15} />
           </mesh>
 
-          {/* nose */}
           <mesh position={[0, -0.08, 1.08]}>
             <sphereGeometry args={[0.06, 12, 12]} />
             <meshStandardMaterial color="#0a0a0a" />
           </mesh>
 
-          {/* ears */}
           <BunnyEar side={1} />
           <BunnyEar side={-1} />
         </group>
 
-        {/* paws holding carrot */}
         <mesh ref={pawLRef} position={[-0.22, -0.05, 0.75]}>
           <sphereGeometry args={[0.16, 16, 16]} />
           <meshStandardMaterial color="#ffffff" roughness={0.7} />
@@ -132,7 +117,6 @@ function Bunny() {
           <meshStandardMaterial color="#ffffff" roughness={0.7} />
         </mesh>
 
-        {/* carrot */}
         <group ref={carrotRef} position={[0, 0.15, 0.9]} rotation={[0.3, 0, 0]}>
           <mesh>
             <coneGeometry args={[0.13, 0.55, 12]} />
@@ -182,11 +166,11 @@ function InteractiveCamera() {
 
 export function AsciiScene() {
   return (
-    <div className={styles.container}>
-      <div className={styles.scanlines} />
-      <div className={styles.glow} />
+    <div className="relative w-full h-full min-h-[400px] border border-[#222222] bg-black overflow-hidden">
+      <div className="scanlines-overlay absolute inset-0 pointer-events-none z-10" />
+      <div className="radial-glow-overlay absolute inset-0 pointer-events-none z-10" />
       <Canvas
-        className={styles.canvas}
+        className="w-full h-full"
         camera={{ position: [0, 0.8, 5.5], fov: 45 }}
         gl={{ antialias: false, alpha: true }}
         dpr={[1, 1.5]}
@@ -202,9 +186,9 @@ export function AsciiScene() {
           resolution={0.17}
         />
       </Canvas>
-      <div className={styles.label}>
+      <div className="absolute bottom-4 left-4 font-pixel text-xs text-[#888888] tracking-widest z-20 flex">
         <span>SNOWBALL_</span>
-        <span className={styles.blink}>_</span>
+        <span className="animate-blink">_</span>
       </div>
     </div>
   )

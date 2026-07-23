@@ -1,11 +1,11 @@
 import { createBrowserRouter, Navigate } from 'react-router'
-import { MainLayout } from '@presentation/components/layout/MainLayout'
-import { HomePage } from '@presentation/pages/HomePage'
-import { FeaturesPage } from '@presentation/pages/FeaturesPage'
-import { AboutPage } from '@presentation/pages/AboutPage'
-import { ChatPage } from '@features/chat/pages/ChatPage'
-import Login from '@features/auth/pages/Login'
-import Register from '@features/auth/pages/Register'
+import { MainLayout } from '@/components/layout/MainLayout'
+import { HomePage } from '@/features/marketing/pages/HomePage'
+import { FeaturesPage } from '@/features/marketing/pages/FeaturesPage'
+import { AboutPage } from '@/features/marketing/pages/AboutPage'
+import { ChatPage } from '@/features/chat/pages/ChatPage'
+import Login from '@/features/auth/pages/Login'
+import Register from '@/features/auth/pages/Register'
 
 export const router = createBrowserRouter([
   {
