@@ -49,7 +49,6 @@ ChatRouter.get("/:chat_id",authUser, get_messages);
  */
 ChatRouter.delete("/:chat_id",authUser, delete_chat);
 
-
 /**
  * @route PATCH /api/chat/:message_id
  * @desc Update a specific message
