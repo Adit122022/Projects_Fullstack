@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { APP_NAME, TAGLINE } from '@domain/constants/app.constants'
+import { APP_NAME, TAGLINE } from '@/constants/app.constants'
 import styles from './AboutPage.module.css'
 
 export function AboutPage() {

@@ -32,7 +32,12 @@ export const send_message = async (req, res) => {
     // 5. Generate title if this was the first message
     let title = null;
     if (!chat_id) {
-      title = await genreateChatTitle(message);
+      try {
+        title = await genreateChatTitle(message);
+      } catch (titleError) {
+        console.error("Title generation fallback:", titleError.message);
+        title = message.length > 30 ? message.slice(0, 30) + "..." : message;
+      }
       await chatModel.findByIdAndUpdate(currentChatId, { title });
     }
 

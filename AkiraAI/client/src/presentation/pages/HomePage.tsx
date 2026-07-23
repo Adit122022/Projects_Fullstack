@@ -4,7 +4,7 @@ import {
   APP_NAME,
   HERO_HEADLINES,
   HERO_SUBTEXT,
-} from '@domain/constants/app.constants'
+} from '@/constants/app.constants'
 import { AsciiScene } from '@presentation/components/ascii/AsciiScene'
 import styles from './HomePage.module.css'
 

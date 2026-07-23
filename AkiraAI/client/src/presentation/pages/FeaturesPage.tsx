@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { FEATURES } from '@domain/constants/app.constants'
+import { FEATURES } from '@/constants/app.constants'
 import styles from './FeaturesPage.module.css'
 
 export function FeaturesPage() {

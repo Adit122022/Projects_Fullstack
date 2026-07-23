@@ -1,4 +1,4 @@
-import { APP_NAME } from '@domain/constants/app.constants'
+import { APP_NAME } from '@/constants/app.constants'
 import styles from './Footer.module.css'
 
 export function Footer() {

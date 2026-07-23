@@ -7,14 +7,14 @@ const Mistral_API_KEY = process.env.MISTRAL_API_KEY;
 
 const gemini_llm = new ChatGoogle({
   apiKey: Google_API_KEY,
-  modelName: "gemini-2.5-flash",
+  model: "gemini-1.5-flash",
+  modelName: "gemini-1.5-flash",
 });
 
 const mistral_llm = new ChatMistralAI({
   apiKey: Mistral_API_KEY,
   model: "mistral-small-2603",
 });
-
 
 export async function aiMsg(prompt) {
   try {
@@ -60,7 +60,8 @@ export async function genreateChatTitle(messages) {
       new HumanMessage(payload),
     ]);
 
-    return response.text;
+    const titleText = typeof response.content === "string" ? response.content : response.text;
+    return (titleText || "").replace(/^["']|["']$/g, '').trim() || "New Chat";
   } catch (error) {
     console.error("Error in genreateChatTitle:", error);
     throw error;

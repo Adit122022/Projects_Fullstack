@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router'
 import { motion } from 'framer-motion'
-import { APP_NAME, NAV_LINKS } from '@domain/constants/app.constants'
+import { APP_NAME, NAV_LINKS } from '@/constants/app.constants'
 import styles from './Navbar.module.css'
 
 export function Navbar() {
