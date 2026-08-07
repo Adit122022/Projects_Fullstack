@@ -1,0 +1,62 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+model Order {
+  id                 String        @id @default(cuid())
+  customerName       String
+  customerEmail      String
+  customerPhone      String
+  shippingAddress    String
+  companyName        String?
+  quantity           Int
+  unitPrice          Float         @default(12000.0) // INR
+  totalAmount        Float
+  paymentStatus      PaymentStatus @default(PENDING)
+  orderStatus        OrderStatus   @default(PENDING)
+  stripeSessionId    String?       @unique
+  razorpayOrderId    String?       @unique
+  razorpayPaymentId  String?       @unique
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+model Lead {
+  id            String   @id @default(cuid())
+  name          String
+  email         String
+  phone         String
+  organization  String
+  requiredSeats Int
+  message       String?
+  status        String   @default("NEW") // NEW, CONTACTED, CLOSED
+  createdAt     DateTime @default(now())
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  role         String   @default("ADMIN")
+  createdAt    DateTime @default(now())
+}
