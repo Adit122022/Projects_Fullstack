@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SiteHeader } from '@/components/site-header';
@@ -49,8 +48,9 @@ interface Lead {
 }
 
 export default function AdminDashboard() {
-  const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
+  const [adminToken, setAdminToken] = useState<string | null>(null);
+  const [adminUser, setAdminUser] = useState<any>(null);
 
   // Active Tab State (controlled via sidebar)
   const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'leads'>('dashboard');
@@ -69,10 +69,10 @@ export default function AdminDashboard() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
   const fetchData = async () => {
-    if (!session?.session?.token) return;
+    const token = localStorage.getItem('admin_token');
+    if (!token) return;
     
     setError('');
-    const token = session.session.token;
 
     try {
       // Fetch Orders
@@ -100,14 +100,57 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    if (!isPending) {
-      if (session?.user && (session.user as any).role === 'ADMIN') {
-        fetchData();
-      } else {
+    const token = localStorage.getItem('admin_token');
+    const userJson = localStorage.getItem('admin_user');
+
+    if (token && userJson) {
+      try {
+        const user = JSON.parse(userJson);
+        if (user.role === 'ADMIN') {
+          setAdminToken(token);
+          setAdminUser(user);
+          
+          // Trigger fetch using direct token variable
+          const getInitialData = async () => {
+            setError('');
+            try {
+              const ordersRes = await fetch(`${apiUrl}/api/orders`, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              if (ordersRes.status === 401 || ordersRes.status === 403) {
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+                router.replace('/admin/login');
+                return;
+              }
+              if (!ordersRes.ok) throw new Error('Failed to fetch orders');
+              const ordersData = await ordersRes.json();
+              setOrders(ordersData);
+
+              const leadsRes = await fetch(`${apiUrl}/api/leads`, {
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              if (!leadsRes.ok) throw new Error('Failed to fetch leads');
+              const leadsData = await leadsRes.json();
+              setLeads(leadsData);
+            } catch (err: any) {
+              setError(err.message || 'Error loading dashboard records.');
+            } finally {
+              setLoading(false);
+              setRefreshing(false);
+            }
+          };
+          getInitialData();
+        } else {
+          router.replace('/admin/login');
+        }
+      } catch (e) {
         router.replace('/admin/login');
       }
+    } else {
+      router.replace('/admin/login');
     }
-  }, [isPending, session]);
+  }, []);
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -115,8 +158,8 @@ export default function AdminDashboard() {
   };
 
   const handleUpdateOrderStatus = async (orderId: string, newStatus: string) => {
-    if (!session?.user) return;
-    const token = (session.user as any).accessToken;
+    const token = localStorage.getItem('admin_token');
+    if (!token) return;
 
     try {
       const res = await fetch(`${apiUrl}/api/orders/${orderId}`, {
@@ -147,8 +190,8 @@ export default function AdminDashboard() {
   };
 
   const handleUpdateLeadStatus = async (leadId: string, newStatus: string) => {
-    if (!session?.user) return;
-    const token = (session.user as any).accessToken;
+    const token = localStorage.getItem('admin_token');
+    if (!token) return;
 
     try {
       const res = await fetch(`${apiUrl}/api/leads/${leadId}`, {
@@ -205,10 +248,10 @@ export default function AdminDashboard() {
       l.email.toLowerCase().includes(leadSearch.toLowerCase())
   );
 
-  if (isPending || loading) {
+  if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center gap-2 bg-slate-55 dark:bg-slate-950">
-        <RefreshCw className="animate-spin text-blue-600" size={24} />
+      <div className="flex h-screen items-center justify-center gap-2 bg-slate-50 dark:bg-slate-950">
+        <RefreshCw className="animate-spin text-emerald-600" size={24} />
         <span className="text-sm font-semibold text-slate-500">Loading Admin System...</span>
       </div>
     );
@@ -216,9 +259,9 @@ export default function AdminDashboard() {
 
   // Define sidebar user information
   const sidebarUser = {
-    name: session?.user?.name || 'Administrator',
-    email: session?.user?.email || 'admin@ncomputing.in',
-    avatar: 'https://placehold.co/100x100/3b82f6/ffffff?text=A'
+    name: adminUser?.name || 'Administrator',
+    email: adminUser?.email || 'admin@ncomputing.in',
+    avatar: 'https://placehold.co/100x100/10b981/ffffff?text=A'
   };
 
   // Tab Header title mapping

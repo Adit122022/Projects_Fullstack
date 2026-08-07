@@ -18,15 +18,26 @@ export default function AdminLoginPage() {
     setError('');
 
     try {
-      const { data, error } = await authClient.signIn.email({
-        email,
-        password,
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) {
-        setError(error.message || 'Invalid credentials. Please verify your email and password.');
+      const result = await res.json();
+
+      if (!res.ok) {
+        setError(result.error || 'Authentication failed. Please verify your credentials.');
         setLoading(false);
       } else {
+        // Save to localStorage for client state persistence
+        localStorage.setItem('admin_token', result.token);
+        localStorage.setItem('admin_user', JSON.stringify(result.user));
+
+        // Write custom cookie
+        const secureFlag = window.location.protocol === 'https:' ? 'Secure;' : '';
+        document.cookie = `admin_session_token=${result.token}; path=/; max-age=604800; SameSite=Lax; ${secureFlag}`;
+        
         router.replace('/admin');
         router.refresh();
       }

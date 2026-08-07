@@ -41,15 +41,15 @@ export default function Calculator() {
   return (
     <div className="rounded-3xl bg-slate-900 text-white p-6 sm:p-8 lg:p-10 shadow-2xl border border-slate-800 relative overflow-hidden">
       {/* Decorative Gradients */}
-      <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         
         {/* Left Input Section */}
         <div className="lg:col-span-6 space-y-6">
           <div>
-            <span className="text-xs font-semibold text-blue-400 uppercase tracking-widest">
+            <span className="text-xs font-semibold text-emerald-450 uppercase tracking-widest">
               ROI & Savings Calculator
             </span>
             <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
@@ -66,7 +66,7 @@ export default function Calculator() {
               <label className="text-sm font-semibold text-slate-300">
                 Number of Virtualized Seats:
               </label>
-              <span className="text-2xl font-extrabold text-blue-400">
+              <span className="text-2xl font-extrabold text-emerald-400">
                 {seats} Seats
               </span>
             </div>
@@ -78,7 +78,7 @@ export default function Calculator() {
               step="5"
               value={seats}
               onChange={(e) => setSeats(Number(e.target.value))}
-              className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
             />
             
             <div className="flex justify-between text-xs text-slate-500">
@@ -91,11 +91,11 @@ export default function Calculator() {
           {/* Quick Info Grid */}
           <div className="grid grid-cols-2 gap-4 text-xs text-slate-400">
             <div className="flex items-start gap-2">
-              <Zap size={14} className="text-yellow-500 mt-0.5 shrink-0" />
+              <Zap size={14} className="text-amber-500 mt-0.5 shrink-0" />
               <span>Electricity calculated at ₹{POWER_COST_PER_KWH}/kWh, 8 hours/day, 260 days/year.</span>
             </div>
             <div className="flex items-start gap-2">
-              <Lightbulb size={14} className="text-cyan-500 mt-0.5 shrink-0" />
+              <Lightbulb size={14} className="text-emerald-500 mt-0.5 shrink-0" />
               <span>Thin Client cost includes virtualization hardware + allocation for central host server resources.</span>
             </div>
           </div>
@@ -112,7 +112,7 @@ export default function Calculator() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-400 font-medium">CAPEX Investment</span>
-                <Wallet size={16} className="text-blue-400" />
+                <Wallet size={16} className="text-emerald-450" />
               </div>
               <div className="mt-3">
                 <div className="text-xs text-slate-400 line-through">
@@ -134,7 +134,7 @@ export default function Calculator() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-400 font-medium">Annual Power cost</span>
-                <Zap size={16} className="text-yellow-400" />
+                <Zap size={16} className="text-amber-400" />
               </div>
               <div className="mt-3">
                 <div className="text-xs text-slate-400 line-through">
@@ -152,35 +152,35 @@ export default function Calculator() {
           </div>
 
           {/* Grand Total Savings Box */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+          <div className="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 shadow-xl relative overflow-hidden">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
             
-            <span className="text-xs font-semibold text-blue-100 uppercase tracking-wider block">
+            <span className="text-xs font-semibold text-emerald-100 uppercase tracking-wider block">
               Estimated First-Year Total Savings
             </span>
             <div className="flex items-baseline gap-1 mt-2">
               <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">
                 ₹{Math.round(totalSavingsFirstYear).toLocaleString('en-IN')}
               </span>
-              <span className="text-xs text-blue-200">saved</span>
+              <span className="text-xs text-emerald-250">saved</span>
             </div>
 
             <div className="mt-4 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <span className="text-xs text-blue-100 max-w-xs text-center sm:text-left">
+              <span className="text-xs text-emerald-100 max-w-xs text-center sm:text-left">
                 Setup your virtual desktop project today. Ready to transition?
               </span>
               <div className="flex gap-2">
                 <button
                   onClick={() => setQuantity(seats)}
-                  className="bg-white hover:bg-slate-100 text-blue-900 font-bold text-xs px-3.5 py-2 rounded-xl transition-all cursor-pointer"
+                  className="bg-white hover:bg-slate-100 text-emerald-950 font-bold text-xs px-3.5 py-2 rounded-xl transition-all cursor-pointer"
                 >
                   Apply to Cart
                 </button>
                 <Link
                   href="/checkout"
                   onClick={() => setQuantity(seats)}
-                  className="bg-blue-900/40 hover:bg-blue-900/60 text-white font-bold text-xs px-3.5 py-2 rounded-xl border border-white/10 flex items-center gap-1 transition-all"
+                  className="bg-emerald-900/40 hover:bg-emerald-900/60 text-white font-bold text-xs px-3.5 py-2 rounded-xl border border-white/10 flex items-center gap-1 transition-all"
                 >
                   Buy Now <ArrowRight size={12} />
                 </Link>

@@ -37,17 +37,7 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 font-bold text-white shadow-md shadow-blue-500/20">
-              N
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">
-                NComputing
-              </span>
-              <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 tracking-wider uppercase">
-                India Portal
-              </span>
-            </div>
+            <img src="/NComputing-Compute-Smartly.svg" alt="NComputing Logo" className="h-8 w-auto dark:invert" />
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -56,9 +46,9 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${
+                className={`text-sm font-medium transition-colors hover:text-emerald-600 dark:hover:text-emerald-400 ${
                   pathname === link.href
-                    ? 'text-blue-600 dark:text-blue-400 font-semibold'
+                    ? 'text-emerald-600 dark:text-emerald-400 font-semibold'
                     : 'text-slate-600 dark:text-slate-300'
                 }`}
               >
@@ -74,7 +64,7 @@ export default function Navbar() {
             {mounted && (
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="p-2 rounded-xl text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+                className="p-2 rounded-xl text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors cursor-pointer"
                 title="Toggle Theme"
               >
                 {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -84,11 +74,11 @@ export default function Navbar() {
             {/* Cart Icon */}
             <Link
               href="/checkout"
-              className="relative p-2 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              className="relative p-2 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
             >
               <ShoppingCart size={20} />
               {quantity > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-slate-950">
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-slate-950">
                   {quantity}
                 </span>
               )}
@@ -97,21 +87,12 @@ export default function Navbar() {
             {/* Admin Buttons / Auth Status */}
             {session ? (
               <div className="flex items-center gap-2">
-                {(session.user as any).role === 'ADMIN' ? (
-                  <Link
-                    href="/admin"
-                    className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900"
-                  >
-                    <LayoutDashboard size={14} /> Admin
-                  </Link>
-                ) : (
-                  <Link
-                    href="/profile"
-                    className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900"
-                  >
-                    <User size={14} /> Profile
-                  </Link>
-                )}
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900"
+                >
+                  <User size={14} /> Profile
+                </Link>
                 <button
                   onClick={async () => {
                     await authClient.signOut();
@@ -126,15 +107,9 @@ export default function Navbar() {
               <div className="flex items-center gap-3">
                 <Link
                   href="/login"
-                  className="text-xs font-semibold text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm"
                 >
-                  Client Sign In
-                </Link>
-                <Link
-                  href="/admin/login"
-                  className="text-xs font-semibold text-slate-450 hover:text-blue-600 dark:text-slate-500 dark:hover:text-blue-400 transition-colors border-l border-slate-200 dark:border-slate-800 pl-3"
-                >
-                  Admin Login
+                  Client Access Portal
                 </Link>
               </div>
             )}
@@ -162,7 +137,7 @@ export default function Navbar() {
             <Link href="/checkout" className="relative p-2 text-slate-600 dark:text-slate-300">
               <ShoppingCart size={20} />
               {quantity > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">
                   {quantity}
                 </span>
               )}
@@ -188,7 +163,7 @@ export default function Navbar() {
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`text-sm font-semibold transition-colors ${
-                    pathname === link.href ? 'text-blue-600' : 'text-slate-600 dark:text-slate-300'
+                    pathname === link.href ? 'text-emerald-600' : 'text-slate-600 dark:text-slate-300'
                   }`}
                 >
                   {link.label}
@@ -196,15 +171,6 @@ export default function Navbar() {
               ))}
               {session ? (
                 <>
-                  {(session.user as any).role === 'ADMIN' && (
-                    <Link
-                      href="/admin"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-2"
-                    >
-                      <LayoutDashboard size={16} /> Admin Dashboard
-                    </Link>
-                  )}
                   <Link
                     href="/profile"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -218,7 +184,7 @@ export default function Navbar() {
                       await authClient.signOut();
                       window.location.href = '/';
                     }}
-                    className="text-sm font-semibold text-red-600 text-left flex items-center gap-2 cursor-pointer"
+                    className="text-sm font-semibold text-red-650 text-left flex items-center gap-2 cursor-pointer"
                   >
                     <LogOut size={16} /> Sign Out
                   </button>
@@ -230,14 +196,7 @@ export default function Navbar() {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="text-sm font-semibold text-slate-600 dark:text-slate-300"
                   >
-                    Client Sign In
-                  </Link>
-                  <Link
-                    href="/admin/login"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-sm font-semibold text-slate-500 dark:text-slate-400"
-                  >
-                    Admin Login
+                    Client Access Portal
                   </Link>
                 </div>
               )}
@@ -247,7 +206,7 @@ export default function Navbar() {
                 setIsMobileMenuOpen(false);
                 setIsDemoModalOpen(true);
               }}
-              className="w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl"
+              className="w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl"
             >
               Request Demo
             </button>

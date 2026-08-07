@@ -48,11 +48,11 @@ export default function WhyRX420() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12 bg-slate-50/10 dark:bg-slate-950/20">
       
       {/* Title */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-50 dark:bg-blue-950/40 px-3 py-1 rounded-full">
+        <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3.5 py-1.5 rounded-full border border-emerald-500/20">
           Problem vs Solution
         </span>
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
@@ -64,36 +64,36 @@ export default function WhyRX420() {
       </div>
 
       {/* Comparison Table */}
-      <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-sm">
+      <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl bg-white/80 dark:bg-slate-900/80 shadow-sm backdrop-blur-md">
         <table className="w-full text-left border-collapse min-w-[700px]">
           <thead>
-            <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider">
+            <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider">
               <th className="p-5">Feature</th>
               <th className="p-5">Traditional PC Workspace</th>
-              <th className="p-5 text-blue-600 dark:text-blue-400">NComputing RX420 Solution</th>
+              <th className="p-5 text-emerald-650 dark:text-emerald-450">NComputing RX420 Solution</th>
               <th className="p-5">Strategic Impact</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-sm">
             {comparisonRows.map((row, i) => (
-              <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
+              <tr key={i} className="hover:bg-slate-55/30 dark:hover:bg-slate-800/10 transition-colors">
                 <td className="p-5 font-bold text-slate-800 dark:text-white max-w-[150px]">
                   {row.feature}
                 </td>
                 <td className="p-5 text-slate-500 dark:text-slate-400 max-w-[250px]">
                   <div className="flex items-start gap-2">
-                    <AlertCircle size={16} className="text-red-500 mt-0.5 shrink-0" />
+                    <AlertCircle size={16} className="text-red-550 mt-0.5 shrink-0" />
                     <span>{row.pc}</span>
                   </div>
                 </td>
                 <td className="p-5 text-slate-800 dark:text-slate-200 font-semibold max-w-[250px]">
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 size={16} className="text-green-500 mt-0.5 shrink-0" />
+                    <CheckCircle2 size={16} className="text-emerald-550 mt-0.5 shrink-0" />
                     <span>{row.rx420}</span>
                   </div>
                 </td>
                 <td className="p-5 text-slate-500 dark:text-slate-400">
-                  <span className="inline-flex items-center rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 text-xs font-semibold px-2.5 py-0.5 border border-blue-100 dark:border-blue-900/50">
+                  <span className="inline-flex items-center rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-semibold px-2.5 py-0.5 border border-emerald-100 dark:border-emerald-900/50">
                     {row.advantage}
                   </span>
                 </td>
@@ -120,7 +120,7 @@ export default function WhyRX420() {
           </button>
           <Link
             href="/checkout"
-            className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-2xl text-sm transition-all flex items-center justify-center gap-1.5"
+            className="w-full md:w-auto bg-emerald-650 hover:bg-emerald-750 text-white font-bold px-6 py-3 rounded-2xl text-sm transition-all flex items-center justify-center gap-1.5"
           >
             Buy RX420 Endpoints <ArrowRight size={16} />
           </Link>

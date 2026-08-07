@@ -21,30 +21,30 @@ export default function ProductDetails() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-16">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-16 bg-slate-50/10 dark:bg-slate-950/10">
       
       {/* Product Introduction */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-6 space-y-6">
-          <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-50 dark:bg-blue-950/40 px-3 py-1 rounded-full">
+          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3.5 py-1.5 rounded-full border border-emerald-500/20">
             Product Profile
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             NComputing RX420 Thin Client
           </h1>
           <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed">
-            The RX420 is an enterprise-grade thin client virtual desktop endpoint built on the Raspberry Pi 4 platform. It features full dual-monitor capabilities, ultra-low energy footprint, and native transparent redirect support for standard peripherals. For global updates and documentation, check the official site at <a href="https://www.ncomputing.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">ncomputing.com</a>.
+            The RX420 is an enterprise-grade thin client virtual desktop endpoint built on the Raspberry Pi 4 platform. It features full dual-monitor capabilities, ultra-low energy footprint, and native transparent redirect support for standard peripherals. For global updates and documentation, check the official site at <a href="https://www.ncomputing.com" target="_blank" rel="noopener noreferrer" className="text-emerald-600 dark:text-emerald-400 hover:underline">ncomputing.com</a>.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-2">
             <Link
               href="/checkout"
-              className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-2xl transition-all shadow-lg hover:shadow-blue-500/25"
+              className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-2xl transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30"
             >
               Order Online <ArrowRight size={18} />
             </Link>
             <button
               onClick={() => setIsDemoModalOpen(true)}
-              className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-950 font-bold py-3 px-6 rounded-2xl transition-all shadow-md hover:shadow-lg cursor-pointer"
+              className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-950 font-bold py-3.5 px-6 rounded-2xl transition-all shadow-md hover:shadow-lg cursor-pointer"
             >
               Request B2B Trial Kit
             </button>
@@ -52,46 +52,15 @@ export default function ProductDetails() {
         </div>
 
         {/* Visual Product Box Spec Mockup */}
-        <div className="lg:col-span-6 flex justify-center">
-          <div className="w-full max-w-[450px] bg-slate-900 text-white border border-slate-800 p-8 rounded-3xl shadow-xl space-y-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full blur-2xl" />
-            <h3 className="text-xl font-bold border-b border-slate-800 pb-4">
-              Hardware Highlights
-            </h3>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-start gap-2.5">
-                <Monitor size={18} className="text-blue-500 mt-0.5 shrink-0" />
-                <div>
-                  <h5 className="text-xs font-bold text-slate-200">Dual 4K Video</h5>
-                  <p className="text-[10px] text-slate-400">Micro-HDMI outputs</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2.5">
-                <Cpu size={18} className="text-blue-500 mt-0.5 shrink-0" />
-                <div>
-                  <h5 className="text-xs font-bold text-slate-200">ARM Cortex-A72</h5>
-                  <p className="text-[10px] text-slate-400">1.5GHz 64-bit SoC</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2.5">
-                <Wifi size={18} className="text-blue-500 mt-0.5 shrink-0" />
-                <div>
-                  <h5 className="text-xs font-bold text-slate-200">Gigabit / WiFi</h5>
-                  <p className="text-[10px] text-slate-400">5G WiFi + LAN</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2.5">
-                <Settings size={18} className="text-blue-500 mt-0.5 shrink-0" />
-                <div>
-                  <h5 className="text-xs font-bold text-slate-200">PMC Managed</h5>
-                  <p className="text-[10px] text-slate-400">Central management</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-800 text-xs text-slate-400 leading-relaxed">
-              <strong>vSpace Pro Enterprise</strong> enables multiple users to run isolated sessions from a single central host server. Combined with the RX420 hardware, it delivers the ultimate desktop virtualization experience.
+        <div className="lg:col-span-6 flex flex-col gap-6 items-center justify-center">
+          <div className="relative group w-full max-w-[500px]">
+            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 rounded-3xl blur-3xl opacity-80 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            <div className="relative rounded-3xl overflow-hidden border border-slate-200/60 dark:border-slate-800/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl p-2 transition-transform duration-500 hover:scale-[1.01]">
+              <img
+                src="/image.png"
+                alt="NComputing RX420(RDP) Product Setup"
+                className="rounded-2xl w-full h-auto object-cover"
+              />
             </div>
           </div>
         </div>
@@ -115,14 +84,14 @@ export default function ProductDetails() {
         <h3 className="text-xl font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3">
           Detailed Datasheet Specs
         </h3>
-        <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900">
+        <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
           <div className="divide-y divide-slate-200 dark:divide-slate-800">
             {specSpecs.map((spec, i) => (
               <div key={i} className="grid grid-cols-1 sm:grid-cols-3 p-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors">
                 <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 sm:col-span-1 flex items-center">
                   {spec.label}
                 </div>
-                <div className="text-sm text-slate-800 dark:text-slate-200 sm:col-span-2 mt-1 sm:mt-0 font-medium">
+                <div className="text-sm text-slate-800 dark:text-slate-200 sm:col-span-2 mt-1 sm:mt-0 font-medium font-sans">
                   {spec.value}
                 </div>
               </div>
