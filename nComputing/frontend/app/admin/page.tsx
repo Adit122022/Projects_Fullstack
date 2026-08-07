@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SiteHeader } from '@/components/site-header';
@@ -49,7 +49,7 @@ interface Lead {
 }
 
 export default function AdminDashboard() {
-  const { data: session, status } = useSession();
+  const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
 
   // Active Tab State (controlled via sidebar)
@@ -69,10 +69,10 @@ export default function AdminDashboard() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
   const fetchData = async () => {
-    if (!session?.user || !(session.user as any).accessToken) return;
+    if (!session?.session?.token) return;
     
     setError('');
-    const token = (session.user as any).accessToken;
+    const token = session.session.token;
 
     try {
       // Fetch Orders
@@ -100,12 +100,14 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated') {
-      fetchData();
-    } else if (status === 'unauthenticated') {
-      router.replace('/admin/login');
+    if (!isPending) {
+      if (session?.user && (session.user as any).role === 'ADMIN') {
+        fetchData();
+      } else {
+        router.replace('/admin/login');
+      }
     }
-  }, [status, session]);
+  }, [isPending, session]);
 
   const handleRefresh = () => {
     setRefreshing(true);
@@ -203,9 +205,9 @@ export default function AdminDashboard() {
       l.email.toLowerCase().includes(leadSearch.toLowerCase())
   );
 
-  if (status === 'loading' || loading) {
+  if (isPending || loading) {
     return (
-      <div className="flex h-screen items-center justify-center gap-2 bg-slate-50 dark:bg-slate-950">
+      <div className="flex h-screen items-center justify-center gap-2 bg-slate-55 dark:bg-slate-950">
         <RefreshCw className="animate-spin text-blue-600" size={24} />
         <span className="text-sm font-semibold text-slate-500">Loading Admin System...</span>
       </div>

@@ -3,15 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSession, signOut } from 'next-auth/react';
+import { authClient } from '@/lib/auth-client';
 import { useTheme } from 'next-themes';
-import { ShoppingCart, LogOut, LayoutDashboard, Menu, X, ArrowRight, Sun, Moon } from 'lucide-react';
+import { ShoppingCart, LogOut, LayoutDashboard, Menu, X, ArrowRight, Sun, Moon, User } from 'lucide-react';
 import { useCartStore } from '@/lib/store';
 import LeadModal from './lead-modal';
 
 export default function Navbar() {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session } = authClient.useSession();
   const quantity = useCartStore((state) => state.quantity);
   const { theme, setTheme } = useTheme();
   
@@ -97,26 +97,46 @@ export default function Navbar() {
             {/* Admin Buttons / Auth Status */}
             {session ? (
               <div className="flex items-center gap-2">
-                <Link
-                  href="/admin"
-                  className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900"
-                >
-                  <LayoutDashboard size={14} /> Admin
-                </Link>
+                {(session.user as any).role === 'ADMIN' ? (
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900"
+                  >
+                    <LayoutDashboard size={14} /> Admin
+                  </Link>
+                ) : (
+                  <Link
+                    href="/profile"
+                    className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900"
+                  >
+                    <User size={14} /> Profile
+                  </Link>
+                )}
                 <button
-                  onClick={() => signOut({ callbackUrl: '/' })}
-                  className="flex items-center gap-1.5 rounded-lg border border-red-200/50 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 dark:border-red-950/50 dark:bg-red-950/20 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/40 cursor-pointer"
+                  onClick={async () => {
+                    await authClient.signOut();
+                    window.location.href = '/';
+                  }}
+                  className="flex items-center gap-1.5 rounded-lg border border-red-200/50 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-650 dark:border-red-950/50 dark:bg-red-950/20 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/40 cursor-pointer"
                 >
                   <LogOut size={14} /> Sign Out
                 </button>
               </div>
             ) : (
-              <Link
-                href="/admin/login"
-                className="text-xs font-semibold text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors"
-              >
-                Admin Login
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/login"
+                  className="text-xs font-semibold text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors"
+                >
+                  Client Sign In
+                </Link>
+                <Link
+                  href="/admin/login"
+                  className="text-xs font-semibold text-slate-450 hover:text-blue-600 dark:text-slate-500 dark:hover:text-blue-400 transition-colors border-l border-slate-200 dark:border-slate-800 pl-3"
+                >
+                  Admin Login
+                </Link>
+              </div>
             )}
 
             {/* CTA Button */}
@@ -176,31 +196,50 @@ export default function Navbar() {
               ))}
               {session ? (
                 <>
+                  {(session.user as any).role === 'ADMIN' && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-2"
+                    >
+                      <LayoutDashboard size={16} /> Admin Dashboard
+                    </Link>
+                  )}
                   <Link
-                    href="/admin"
+                    href="/profile"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-2"
                   >
-                    <LayoutDashboard size={16} /> Admin Dashboard
+                    <User size={16} /> Profile Settings
                   </Link>
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       setIsMobileMenuOpen(false);
-                      signOut({ callbackUrl: '/' });
+                      await authClient.signOut();
+                      window.location.href = '/';
                     }}
-                    className="text-sm font-semibold text-red-600 text-left flex items-center gap-2"
+                    className="text-sm font-semibold text-red-600 text-left flex items-center gap-2 cursor-pointer"
                   >
                     <LogOut size={16} /> Sign Out
                   </button>
                 </>
               ) : (
-                <Link
-                  href="/admin/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-sm font-semibold text-slate-600 dark:text-slate-300"
-                >
-                  Admin Login
-                </Link>
+                <div className="flex flex-col gap-2.5">
+                  <Link
+                    href="/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-sm font-semibold text-slate-600 dark:text-slate-300"
+                  >
+                    Client Sign In
+                  </Link>
+                  <Link
+                    href="/admin/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-sm font-semibold text-slate-500 dark:text-slate-400"
+                  >
+                    Admin Login
+                  </Link>
+                </div>
               )}
             </nav>
             <button

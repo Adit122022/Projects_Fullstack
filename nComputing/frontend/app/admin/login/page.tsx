@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { Loader2, Lock, Mail } from 'lucide-react';
 
@@ -18,14 +18,13 @@ export default function AdminLoginPage() {
     setError('');
 
     try {
-      const res = await signIn('credentials', {
+      const { data, error } = await authClient.signIn.email({
         email,
         password,
-        redirect: false // Do not redirect automatically, let us handle it
       });
 
-      if (res?.error) {
-        setError('Invalid credentials. Please verify your email and password.');
+      if (error) {
+        setError(error.message || 'Invalid credentials. Please verify your email and password.');
         setLoading(false);
       } else {
         router.replace('/admin');
