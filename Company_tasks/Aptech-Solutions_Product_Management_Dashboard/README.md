@@ -24,10 +24,11 @@ cd product-dashboard
 npm install
 ```
 
-Create `product-dashboard/.env` with the variables referenced in `src/config/constants.ts`:
+The constants currently use the DummyJSON fallback API URL. The Cloudinary upload component reads the Vite-prefixed variables below; the API URL constant reads `import.meta.env.API_BASE_URL`, which Vite does not expose by default, so its override may require adjusting the source to use `VITE_API_BASE_URL`.
+
+Create `product-dashboard/.env`:
 
 ```env
-VITE_API_BASE_URL=https://dummyjson.com
 VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name
 VITE_CLOUDINARY_UPLOAD_PRESET=your_unsigned_upload_preset
 ```
