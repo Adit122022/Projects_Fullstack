@@ -1,111 +1,69 @@
-# 🧠 Omoide (思い出): Means "Recollection" or "Memories." 
+# Omide
 
-A full-stack "Omoide (思い出)" application designed to help you capture, organize, and retrieve your digital content (tweets, videos, articles, links). Built with the MERN stack (MongoDB, Express, React, Node.js).
+Omide (a name associated with recollection) is a personal content library for saving links and other digital content, organizing them by type or tags, and sharing a collection.
 
-## 🚀 Features
+## How it is built
 
-- **Authentication**: Secure Signup and Login with JWT.
-- **Content Management**:
-  - Add various content types: Twitter, YouTube, Documents, and generic Links.
-  - Delete content.
-  - **Drag & Drop**: Organize your content cards by dragging them around the dashboard.
-  - **Filtering**: Filter content by type via the sidebar.
-- **Responsive UI**:
-  - Mobile-friendly Sidebar with hamburger menu.
-  - Responsive grid layout for content cards.
-- **Sharing**: "Share Brain" feature to generate a public link (functionality backend-ready).
-- **User Profile**: Display username and email in the sidebar.
+The client is a TypeScript React single-page application built with Vite. Clerk provides the client authentication UI and session integration. Protected routes and an auth context coordinate the signed-in experience; the dashboard, sidebar, content card, and create-content modal make up the main workflow. The TypeScript Express API is separated into route, controller, model, middleware, and helper modules. Mongoose models represent users, tags, links, and content; content and share routes expose the library operations.
 
-## 🛠️ Tech Stack
+## Stack and tools
 
-### Frontend (`/client`)
+- React 19, TypeScript, Vite 7, React Router 7
+- Clerk React and Clerk Express for authentication
+- Tailwind CSS 4, Framer Motion, Lucide React
+- Axios for API calls
+- Node.js, Express 5, MongoDB/Mongoose
+- TypeScript, npm, ESLint
 
-- **Framework**: React (Vite)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **Animations/Interactions**: Framer Motion (for drag & drop)
-- **State Management**: React Context (AuthContext)
-- **Routing**: React Router DOM
+## Run locally
 
-### Backend (`/server`)
+Prerequisites: Node.js/npm, MongoDB, and a Clerk application with frontend and backend keys.
 
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: MongoDB (Mongoose)
-- **Authentication**: BOrypt (Hashing), JWT (Tokens)
-- **Language**: TypeScript
-
-## 📂 Project Structure
-
-```
-/boot
-├── client/     # React Frontend
-└── server/     # Express Backend
+```bash
+cd server
+npm install
+cd ../client
+npm install
 ```
 
-## 🏁 Getting Started
+The server reads `PORT` and Clerk keys in `server/src/config/_config.ts`. The client reads `VITE_CLERK_PUBLISHABLE_KEY` in `client/src/App.tsx`. The current database connector uses a hard-coded local URI (`mongodb://localhost:27017/Brainly`); configure the connector for your MongoDB deployment before relying on it elsewhere.
 
-### Prerequisites
+Create `server/.env`:
 
-- Node.js (v14+ recommended)
-- MongoDB (Local or Atlas URI)
+```env
+PORT=8080
+CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+```
 
-### 1. Backend Setup
+Create `client/.env`:
 
-1. Navigate to the server directory:
-   ```bash
-   cd server
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create a `.env` file in the `server` root (if not present) and configure:
-   ```env
-   MONGO_URI=mongodb://localhost:27017/secondbrain  # Or your Atlas URI
-   JWT_SECRET=your_super_secret_key
-   PORT=3000
-   ```
-4. Start the server:
-   ```bash
-   npm run dev
-   ```
-   Server should run on `http://localhost:3000`.
+```env
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+```
 
-### 2. Frontend Setup
+Start the API from `server/`:
 
-1. Open a new terminal and navigate to the client directory:
-   ```bash
-   cd client
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the Vite development server:
-   ```bash
-   npm run dev
-   ```
-   Frontend should run on `http://localhost:5173` (by default).
+```bash
+npm run dev
+```
 
-## 🔌 API Endpoints
+This script builds TypeScript and starts `dist/index.js`. In another terminal, start the client from `client/`:
 
-- **Auth**:
-  - `POST /api/v1/auth/signup` - Create a new account
-  - `POST /api/v1/auth/signin` - Login
-- **Content**:
-  - `GET /api/v1/content` - Get all user content
-  - `POST /api/v1/content` - Add new content
-  - `DELETE /api/v1/content` - Delete content
-- **Share**:
-  - `POST /api/v1/brain/share` - Toggle/Generate share link
-  - `GET /api/v1/brain/:shareLink` - Access public brain
+```bash
+npm run dev
+```
 
-## 📝 Usage
+The client uses Vite's default URL (`http://localhost:5173`); the server CORS origin is currently fixed to that URL. The server script assumes generated JavaScript output is available as `dist/index.js`.
 
-1. **Sign Up**: Create an account on the `/signup` page.
-2. **Dashboard**: Once logged in, you'll see your dashboard.
-3. **Add Content**: Click "Add Content", choose a type (e.g., YouTube), and paste a link.
-4. **Drag & Drop**: Click and drag cards to reorder them.
-5. **Mobile**: On smaller screens, use the hamburger menu to access the sidebar.
+## Source map
+
+- `client/src/pages` — sign-in, sign-up, and dashboard
+- `client/src/components` and `context` — library UI and auth state
+- `server/src/routes` and `controllers` — HTTP endpoints and request logic
+- `server/src/model` — Mongoose data models
+- `server/src/middleware` — route authentication
+
+## Notes
+
+The current server connector and older READMEs disagree about database configuration and authentication approach. This guide documents the active entry point: Clerk middleware is installed and the database URI is hard-coded in `src/db/db.ts`. Review those values before deployment. No automated tests are configured.
