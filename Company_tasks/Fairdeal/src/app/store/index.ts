@@ -6,11 +6,10 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // All items and state are clean serializable POJOs
         warnAfter: 128,
       },
     }),
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: Boolean(import.meta.env?.DEV),
 })
 
 export type RootState = ReturnType<typeof rootReducer>
