@@ -24,7 +24,7 @@ export const RetailerTestimonials: React.FC = () => {
               Voices from the <span className="text-[#2959A3]">Shop Floor</span>
             </h2>
             <p className="text-sm sm:text-base text-[#6F6F6F] mt-2 max-w-xl">
-              20,000+ retailers trust Fairdeal every day across Delhi-NCR. Here is what they have to say:
+              94553+ retailers trust Fairdeal every day. Here is what they have to say:
             </p>
           </div>
 

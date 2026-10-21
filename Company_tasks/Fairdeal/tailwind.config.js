@@ -59,7 +59,8 @@ export default {
         '3xl': '1.5rem',
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Satoshi', 'Inter', 'system-ui', 'sans-serif'],
+        satoshi: ['Satoshi', 'Inter', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         'marquee-left': {
